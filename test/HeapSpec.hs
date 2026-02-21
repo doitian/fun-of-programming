@@ -7,7 +7,12 @@ import Test.Hspec.QuickCheck
 
 spec :: Spec
 spec = do
-  describe "MaxiphobicHeap" $ do
+  heapSpec "MaxiphobicHeap" (fromList :: [Int] -> MaxiphobicHeap Int)
+  heapSpec "RoundRobinHeap" (fromList :: [Int] -> RoundRobinHeap Int)
+  heapSpec "SkewHeap" (fromList :: [Int] -> SkewHeap Int)
+
+heapSpec :: (HeapTag t) => String -> ([Int] -> Heap t Int) -> Spec
+heapSpec name factory = do
+  describe name $ do
     prop "sorts elements" $ \xs ->
-      let xs' = toList $ (fromList xs :: MaxiphobicHeap Int)
-       in xs' `shouldBe` sort xs
+      toList (factory xs) `shouldBe` sort xs

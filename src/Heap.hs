@@ -6,6 +6,7 @@ module Heap
     deleteMinElement,
     fromList,
     toList,
+    HeapTag,
     MaxiphobicHeap,
     RoundRobinHeap,
     SkewHeap,
