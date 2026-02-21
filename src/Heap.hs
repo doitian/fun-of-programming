@@ -5,6 +5,7 @@ module Heap
     minElement,
     deleteMinElement,
     fromList,
+    toList,
     MaxiphobicHeap,
     RoundRobinHeap,
     SkewHeap,
@@ -106,6 +107,10 @@ insert x h = Fork makeHeapTag x Null Null <> h
 
 fromList :: (Ord a, HeapTag t) => [a] -> Heap t a
 fromList = foldr insert Null
+
+toList :: (Ord a, HeapTag t) => Heap t a -> [a]
+toList Null = []
+toList (Fork _ x a b) = x : (toList $ a <> b)
 
 instance Functor (Heap t) where
   fmap _ Null = Null
