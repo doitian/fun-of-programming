@@ -31,7 +31,7 @@ library
                        -Wpartial-fields
                        -Wredundant-constraints
 
-test-suite quickcheck
+test-suite fun-of-programming-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
@@ -40,6 +40,7 @@ test-suite quickcheck
   build-depends:       base
                      , fun-of-programming
                      , hspec
+                     , QuickCheck
   default-language:    Haskell2010
   ghc-options:         -Wall
                        -Wcompat

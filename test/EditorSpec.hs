@@ -70,3 +70,18 @@ spec = do
 
     prop "atRightI" $ \buf ->
       atRightI buf `shouldBe` atRight (retrieve buf)
+
+    prop "insertI then atLeftI" $ \buf ->
+      (atLeftI $ insertI 'x' buf) `shouldBe` False
+
+    prop "insertI then atRightI" $ \buf ->
+      (atRightI $ insertI 'x' buf) `shouldBe` atRightI buf
+
+    prop "deleteI then atLeftI" $ \buf ->
+      (atLeftI $ deleteI buf) `shouldBe` (getCursor buf <= 1)
+
+    prop "deleteI then atRightI" $ \buf ->
+      (atRightI $ deleteI buf) `shouldBe` atRightI buf
+
+    prop "insertI then deleteI" $ \buf ->
+      (deleteI $ insertI 'x' buf) `shouldBe` buf
