@@ -1,3 +1,1 @@
-import Test.DocTest
-
-main = doctest ["-isrc", "src/"]
+{-# OPTIONS_GHC -F -pgmF hspec-discover #-}

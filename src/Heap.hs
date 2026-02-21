@@ -1,4 +1,15 @@
-module Heap (Heap (..), isEmpty, minElement, deleteMinElement, MaxiphobicHeap, RoundRobinHeap, SkewHeap) where
+module Heap
+  ( Heap (..),
+    insert,
+    isEmpty,
+    minElement,
+    deleteMinElement,
+    fromList,
+    MaxiphobicHeap,
+    RoundRobinHeap,
+    SkewHeap,
+  )
+where
 
 import Data.List (sortOn)
 
@@ -21,7 +32,10 @@ instance HeapTag MaxiphobicHeapTag where
   joinHeaps (Fork t1 x a b) c@(Fork t2 _ _ _) = Fork (t1 <> t2) x a' (b' <> c')
     where
       -- Invert so Nothings will be merged first.
-      [c', b', a'] = sortOn getTag [a, b, c]
+      (c', b', a') = case sortOn getTag [a, b, c] of
+        [e0, e1, e2] -> (e0, e1, e2)
+        _ -> error "impossible: expected exactly three heaps"
+  joinHeaps h1 h2 = h1 <> h2
 
 type MaxiphobicHeap a = Heap MaxiphobicHeapTag a
 
@@ -32,6 +46,7 @@ instance HeapTag RoundRobinHeapTag where
 
   joinHeaps (Fork (RoundRobinHeapTag False) x a b) c = Fork (RoundRobinHeapTag True) x (a <> c) b
   joinHeaps (Fork (RoundRobinHeapTag True) x a b) c = Fork (RoundRobinHeapTag False) x a (b <> c)
+  joinHeaps h1 h2 = h1 <> h2
 
 type RoundRobinHeap a = Heap RoundRobinHeapTag a
 
@@ -41,6 +56,7 @@ instance HeapTag SkewHeapTag where
   makeHeapTag = SkewHeapTag ()
 
   joinHeaps (Fork t x a b) c = Fork t x b (a <> c)
+  joinHeaps h1 h2 = h1 <> h2
 
 type SkewHeap a = Heap SkewHeapTag a
 
@@ -87,6 +103,9 @@ deleteMinElement (Fork _ _ a b) = a <> b
 -- Fork (SkewHeapTag ()) 5 (Fork (SkewHeapTag ()) 15 Null Null) (Fork (SkewHeapTag ()) 10 Null Null)
 insert :: (Ord a, HeapTag t) => a -> Heap t a -> Heap t a
 insert x h = Fork makeHeapTag x Null Null <> h
+
+fromList :: (Ord a, HeapTag t) => [a] -> Heap t a
+fromList = foldr insert Null
 
 instance Functor (Heap t) where
   fmap _ Null = Null
