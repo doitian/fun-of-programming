@@ -3,6 +3,7 @@ module EditorSpec where
 import Editor
 import Test.Hspec
 import Test.Hspec.QuickCheck
+import Test.QuickCheck
 
 type Buffer = (Int, String)
 
@@ -44,6 +45,9 @@ atRight (pos, text) = pos == length text
 retrieve :: BufferI -> Buffer
 retrieve buf = (getCursor buf, getText buf)
 
+trivial :: BufferI -> Bool
+trivial (b, a) = length b + length a <= 2
+
 spec :: Spec
 spec = do
   describe "BufferI" $ do
@@ -54,7 +58,7 @@ spec = do
       retrieve emptyI `shouldBe` empty
 
     prop "insertI" $ \c buf ->
-      retrieve (insertI c buf) `shouldBe` insert c (retrieve buf)
+      classify (trivial buf) "trivial" $ retrieve (insertI c buf) `shouldBe` insert c (retrieve buf)
 
     prop "deleteI" $ \buf ->
       retrieve (deleteI buf) `shouldBe` delete (retrieve buf)
